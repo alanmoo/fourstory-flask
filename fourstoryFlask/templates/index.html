@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Fourstory Flask{% endblock %}</title>
+  </head>
+  <body>
+    {% block content %}
+    <h1>Fourstory Flask</h1>
+    <p>Welcome to Fourstory Flask!</p>
+    <a href="https://foursquare.com/oauth2/authenticate?client_id={{FOURSQUARE_CLIENT_ID}}&response_type=code&redirect_uri={{HOSTNAME}}/auth">Login</a>
+    {% endblock %}
+  </body>
+</html>

@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 
 {% block content %}
-    <h1>Daily Checkins</h1>
+    <h1>Daily Checkins for {{date}}</h1>
     <p>Here are the daily checkins:</p>
     <ul>
         {% for checkin in checkins.response.checkins['items'] %}

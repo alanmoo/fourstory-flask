@@ -47,4 +47,4 @@ def history(date):
     before_timestamp = after_timestamp + 86400
     token = session.get('token')
     checkins = requests.get(f'https://api.foursquare.com/v2/users/self/checkins?oauth_token={token}&v=20190101&beforeTimestamp={before_timestamp}&afterTimestamp={after_timestamp}')
-    return render_template("daily-checkins.html", checkins=checkins.json())
+    return render_template("daily-checkins.html", checkins=checkins.json(), date=date_str)

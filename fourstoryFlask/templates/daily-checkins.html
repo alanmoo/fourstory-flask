@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Daily Checkins for {{date}}</h1>
     {% if checkins.response.checkins['items']|length == 0 %}
-      <p>No checkins for this date, try <a href="/history/date/{{prevDayStr}}">yesterday</a></p>
+      <p>No checkins for this date, try checking <a href="/history/date/{{prevDayStr}}">yesterday</a></p>
     {% else %}
     <p>Here are the daily checkins:</p>
     <ul>

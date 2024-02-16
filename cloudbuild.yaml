@@ -1,0 +1,13 @@
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/fourstory-flask/gcr.io', '.']
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/fourstory-flask/gcr.io']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['run', 'deploy', 'fourstory-flask', '--image', 'gcr.io/fourstory-flask/gcr.io', '--region', 'us-east1']
+images:
+- gcr.io/fourstory-flask/gcr.io

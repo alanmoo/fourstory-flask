@@ -2,10 +2,15 @@
 
 {% block content %}
     <h1>Daily Checkins for {{date}}</h1>
+    {% if checkins.response.checkins['items']|length == 0 %}
+      <p>No checkins for this date.</p>
+    {% else %}
     <p>Here are the daily checkins:</p>
     <ul>
+  
         {% for checkin in checkins.response.checkins['items'] %}
             <li>{{checkin.venue.name}} </li>
         {% endfor %}
     </ul>
+    {% endif %}
 {% endblock %}

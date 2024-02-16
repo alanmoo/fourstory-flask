@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, Blueprint, redirect, render_template, request, session
 from dotenv import load_dotenv
 import requests
@@ -47,4 +47,6 @@ def history(date):
     before_timestamp = after_timestamp + 86400
     token = session.get('token')
     checkins = requests.get(f'https://api.foursquare.com/v2/users/self/checkins?oauth_token={token}&v=20190101&beforeTimestamp={before_timestamp}&afterTimestamp={after_timestamp}')
-    return render_template("daily-checkins.html", checkins=checkins.json(), date=date_str)
+    prevDay = date_obj - timedelta(days=1)
+    prevDayStr = prevDay.strftime('%Y-%m-%d')
+    return render_template("daily-checkins.html", checkins=checkins.json(), date=date_str, prevDayStr=prevDayStr)

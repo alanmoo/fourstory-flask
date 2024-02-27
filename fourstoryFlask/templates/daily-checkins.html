@@ -17,7 +17,7 @@
 {% endblock %}
 {% block scripts %}
 <script>
-    document.getElementById('date').onchange = function() {
+    document.getElementById('date').oninput = function() {
         var date = document.getElementById('date').value;
         window.location.href = '/history/date/' + date;
     }

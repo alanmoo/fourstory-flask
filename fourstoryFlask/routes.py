@@ -9,11 +9,12 @@ from .models import find_user_by_token, save_user_token
 load_dotenv()
 
 bp = Blueprint('main', __name__)
+HOST = os.getenv('HOSTNAME') if os.getenv('PORT')=='80' else os.getenv('HOSTNAME') + ':' + os.getenv('PORT')
 
 @bp.route('/')
 def index():
     # TODO: If the user is logged in, redirect them to the app
-    return render_template("index.html", FOURSQUARE_CLIENT_ID=os.getenv('FOURSQUARE_CLIENT_ID'), HOSTNAME=os.getenv('HOSTNAME'))
+    return render_template("index.html", FOURSQUARE_CLIENT_ID=os.getenv('FOURSQUARE_CLIENT_ID'), HOSTNAME=HOST)
 
 # The route that foursquare directs users back to after they've logged in
 @bp.route('/auth')
@@ -23,8 +24,7 @@ def authenticate():
 
     code = request.args.get('code')
     print(code)  
-    HOSTNAME = os.getenv('HOSTNAME')
-    response = requests.get(f'https://foursquare.com/oauth2/access_token?client_id={FOURSQUARE_CLIENT_ID}&client_secret={FOURSQUARE_CLIENT_SECRET}&grant_type=authorization_code&redirect_uri={HOSTNAME}/auth/user&code={code}')
+    response = requests.get(f'https://foursquare.com/oauth2/access_token?client_id={FOURSQUARE_CLIENT_ID}&client_secret={FOURSQUARE_CLIENT_SECRET}&grant_type=authorization_code&redirect_uri={HOST}/auth/user&code={code}')
     token = response.json()['access_token']
 
     print('finding user by token')
@@ -49,4 +49,6 @@ def history(date):
     checkins = requests.get(f'https://api.foursquare.com/v2/users/self/checkins?oauth_token={token}&v=20190101&beforeTimestamp={before_timestamp}&afterTimestamp={after_timestamp}')
     prevDay = date_obj - timedelta(days=1)
     prevDayStr = prevDay.strftime('%Y-%m-%d')
-    return render_template("daily-checkins.html", checkins=checkins.json(), date=date_str, prevDayStr=prevDayStr)
+    nextDay = date_obj + timedelta(days=1)
+    nextDayStr = prevDay.strftime('%Y-%m-%d')
+    return render_template("daily-checkins.html", checkins=checkins.json(), date=date_str, prevDayStr=prevDayStr, nextDayStr=nextDayStr)

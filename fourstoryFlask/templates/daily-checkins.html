@@ -13,4 +13,13 @@
         {% endfor %}
     </ul>
     {% endif %}
+    <div>Go to date <input type="date" title="destination date" id="date"/></div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.getElementById('date').onchange = function() {
+        var date = document.getElementById('date').value;
+        window.location.href = '/history/date/' + date;
+    }
+</script>
 {% endblock %}

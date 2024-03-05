@@ -17,9 +17,19 @@
 {% endblock %}
 {% block scripts %}
 <script>
-    document.getElementById('date').onchange = function() {
+    let datePicker = document.getElementById('date');
+    var today = new Date();
+    var tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+    datePicker.value = '{{date}}'
+    datePicker.addEventListener('change', (event) => {
         var date = document.getElementById('date').value;
-        window.location.href = '/history/date/' + date;
-    }
+        // if the date after Jan 1, 2000 and before tomorrow, run some code
+        if (date != `{{date}}` && Date.parse(date) > Date.parse('2000-01-01') && Date.parse(date) <= tomorrow){
+            window.location.href = '/history/date/' + date;
+        } else {
+            console.log(date, ' is an invalid date');
+        }
+    });
 </script>
 {% endblock %}

@@ -22,4 +22,4 @@ EXPOSE $PORT
 # Define environment variable
 
 # Run app.py when the container launches
-CMD ["gunicorn", "-w", "$WORKERS", "-b", "0.0.0.0:$PORT", "run:app"]
+CMD gunicorn -w $WORKERS -b 0.0.0.0:$PORT run:app

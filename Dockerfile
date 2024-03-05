@@ -2,7 +2,7 @@
 FROM python:3.8-slim-buster
 
 # ENV variables
-ENV PORT=8080
+ENV PORT=80
 ENV FLASK_DEBUG=false
 ENV FLASK_ENV=production
 ENV WORKERS=4

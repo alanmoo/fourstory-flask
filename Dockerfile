@@ -5,6 +5,7 @@ FROM python:3.8-slim-buster
 ENV PORT=8080
 ENV FLASK_DEBUG=false
 ENV FLASK_ENV=production
+ENV WORKERS=4
 
 # Set the working directory in the container to /app
 WORKDIR /app
@@ -21,4 +22,4 @@ EXPOSE $PORT
 # Define environment variable
 
 # Run app.py when the container launches
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "run:app"]
+CMD ["gunicorn", "-w", "$WORKERS", "-b", "0.0.0.0:$PORT", "run:app"]

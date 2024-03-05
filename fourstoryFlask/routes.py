@@ -10,19 +10,13 @@ from .models import find_user_by_token, save_user_token
 load_dotenv()
 
 bp = Blueprint('main', __name__)
-HOSTNAME = os.getenv('HOSTNAME', 'http://127.0.0.1')
-PORT = os.getenv('PORT', '80')
-if PORT == '80':
-    HOST = HOSTNAME
-else:
-    HOST = f'{HOSTNAME}:{PORT}'
 
 @bp.route('/')
 def index():
     # TODO: If the user is logged in, redirect them to the app
     vars = {
         'FOURSQUARE_CLIENT_ID': os.getenv('FOURSQUARE_CLIENT_ID'),
-        'HOSTNAME': HOST,
+        'HOSTNAME': request.scheme+ "://" + request.host,
     }
     return render_template("index.html", **vars)
 
@@ -38,7 +32,7 @@ def authenticate():
         'client_id': FOURSQUARE_CLIENT_ID,
         'client_secret': FOURSQUARE_CLIENT_SECRET,
         'grant_type': 'authorization_code',
-        'redirect_uri': urllib.parse.urljoin(HOST, '/auth/code'),
+        'redirect_uri': urllib.parse.urljoin(request.scheme + "://" + request.host, '/auth/code'),
         'code': code,
     })
     req_url = urllib.parse.urlunparse((

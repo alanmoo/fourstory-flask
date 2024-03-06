@@ -1,13 +1,9 @@
 from datetime import datetime, timedelta
-from flask import Blueprint, redirect, render_template, request, session
-from dotenv import load_dotenv
+from flask import Blueprint, current_app, redirect, render_template, request, session
 import requests
-import os
 import urllib.parse
 
 from .models import find_user_by_token, save_user_token
-
-load_dotenv()
 
 bp = Blueprint('main', __name__)
 
@@ -15,7 +11,7 @@ bp = Blueprint('main', __name__)
 def index():
     # TODO: If the user is logged in, redirect them to the app
     vars = {
-        'FOURSQUARE_CLIENT_ID': os.getenv('FOURSQUARE_CLIENT_ID'),
+        'FOURSQUARE_CLIENT_ID': current_app.config.get('FOURSQUARE_CLIENT_ID'),
         'HOSTNAME': request.scheme+ "://" + request.host,
     }
     return render_template("index.html", **vars)
@@ -23,8 +19,8 @@ def index():
 # The route that foursquare directs users back to after they've logged in
 @bp.route('/auth')
 def authenticate():
-    FOURSQUARE_CLIENT_ID = os.getenv('FOURSQUARE_CLIENT_ID')
-    FOURSQUARE_CLIENT_SECRET = os.getenv('FOURSQUARE_CLIENT_SECRET')
+    FOURSQUARE_CLIENT_ID = current_app.config.get('FOURSQUARE_CLIENT_ID')
+    FOURSQUARE_CLIENT_SECRET = current_app.config.get('FOURSQUARE_CLIENT_SECRET')
 
     code = request.args.get('code')
 
@@ -59,8 +55,7 @@ def authenticate():
     return redirect(f'/history/date/{today}')
 
 @bp.route('/history/date/<date>')
-def history(date):
-    date_str = request.view_args['date']
+def history(date_str):
     date_obj = datetime.strptime(date_str, '%Y-%m-%d')
     after_timestamp = int(date_obj.timestamp())
     before_timestamp = after_timestamp + 86400

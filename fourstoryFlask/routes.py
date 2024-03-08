@@ -6,14 +6,25 @@ import os
 import urllib.parse
 
 from .models import find_user_by_token, save_user_token
+from functools import wraps
 
 load_dotenv()
 
 bp = Blueprint('main', __name__)
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'token' not in session:
+            return redirect('/')
+        return f(*args, **kwargs)
+    return decorated_function
+
 @bp.route('/')
 def index():
-    # TODO: If the user is logged in, redirect them to the app
+    # If the user is logged in, redirect them to the app
+    if token := session.get('token'):
+        return redirect('/history/date/' + datetime.now().strftime('%Y-%m-%d'))
     vars = {
         'FOURSQUARE_CLIENT_ID': os.getenv('FOURSQUARE_CLIENT_ID'),
         'HOSTNAME': request.scheme+ "://" + request.host,
@@ -44,12 +55,11 @@ def authenticate():
         '',  # fragment
     ))
     resp = requests.get(req_url)
+    print(resp.json())
     token = resp.json()['access_token']
 
-    print('finding user by token')
+    print('Checking for user')
     if not find_user_by_token(token):
-        print('nope')
-        print(find_user_by_token(token))
         save_user_token(token)
 
     session['token'] = token
@@ -59,6 +69,7 @@ def authenticate():
     return redirect(f'/history/date/{today}')
 
 @bp.route('/history/date/<date>')
+@login_required
 def history(date):
     date_str = request.view_args['date']
     date_obj = datetime.strptime(date_str, '%Y-%m-%d')
@@ -79,3 +90,8 @@ def history(date):
     }
     
     return render_template("daily-checkins.html", **templateVars)
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')

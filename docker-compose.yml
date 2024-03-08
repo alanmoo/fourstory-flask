@@ -2,7 +2,7 @@ version: '3'
 
 services:
   flask:
-    container_name: fourstory-flask-dev
+    container_name: fourstory-flask
     build:
       context: .
       dockerfile: Dockerfile
